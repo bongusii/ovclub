@@ -29,7 +29,7 @@ async function checkUserSession() {
 
     if (!session) {
         // Nếu KHÔNG có session (chưa đăng nhập) -> Đá về trang login
-        window.location.href = '/login.html';
+        window.location.href = './login.html';
     } else {
         // Nếu CÓ session (đã đăng nhập)
         console.log('Người dùng đã đăng nhập:', session.user.email);
@@ -93,6 +93,6 @@ logoutButton.addEventListener('click', async () => {
         console.error('Lỗi khi đăng xuất:', error);
     } else {
         // Đăng xuất thành công, chuyển về trang login
-        window.location.href = '/login.html';
+        window.location.href = './login.html';
     }
 });

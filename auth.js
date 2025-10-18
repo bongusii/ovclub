@@ -44,6 +44,6 @@ loginForm.addEventListener('submit', async (event) => {
         
         // Quan trọng: Chuyển hướng người dùng đến trang quản lý nội bộ
         // (Chúng ta sẽ tạo trang 'dashboard.html' này ở bước sau)
-        window.location.href = '/dashboard.html';
+        window.location.href = './dashboard.html';
     }
 });
