@@ -30,29 +30,38 @@ async function checkUserSession() {
     if (!session) {
         // Nếu KHÔNG có session (chưa đăng nhập) -> Đá về trang login
         window.location.href = './login.html';
-    } else {
-        // Nếu CÓ session (đã đăng nhập)
-        console.log('Người dùng đã đăng nhập:', session.user.email);
-        
-        // Lấy thông tin chi tiết (full_name, role) từ bảng 'profiles'
-        const { data: profile, error } = await supabase
-            .from('profiles')
-            .select('full_name, avatar_url') // Chỉ lấy tên và avatar
-            .eq('id', session.user.id) // Tìm profile có ID khớp với ID user
-            .single(); // Lấy 1 kết quả duy nhất
+        return; // Dừng hàm tại đây
+    }
 
-        if (error) {
-            console.error('Lỗi khi lấy profile:', error);
-            userGreetingEl.textContent = `Chào, ${session.user.email}`;
-        } else if (profile) {
-            // Hiển thị lời chào
-            userGreetingEl.textContent = `Chào, ${profile.full_name}`;
-            
-            // (Nâng cao) Cập nhật avatar nếu có
-            if (profile.avatar_url) {
-                userAvatarEl.src = profile.avatar_url;
-            }
+    // Nếu CÓ session (đã đăng nhập)
+    console.log('Người dùng đã đăng nhập:', session.user.email);
+    
+    // Lấy thông tin chi tiết (full_name, role) từ bảng 'profiles'
+    const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('full_name, avatar_url')
+        .eq('id', session.user.id) // Tìm profile có ID khớp với ID user
+        .single(); // Lấy 1 kết quả duy nhất
+
+    // Lấy lại element (vì hàm này chạy bất đồng bộ)
+    const userGreetingEl = document.getElementById('user-greeting');
+    const userAvatarEl = document.getElementById('user-avatar');
+
+    if (error) {
+        // Lỗi nghiêm trọng (vd: không kết nối được)
+        console.error('Lỗi khi lấy profile:', error);
+        if(userGreetingEl) userGreetingEl.textContent = `Chào, ${session.user.email}`;
+    } else if (profile) {
+        // **TRƯỜNG HỢP 1: TÌM THẤY PROFILE (THÀNH CÔNG)**
+        if(userGreetingEl) userGreetingEl.textContent = `Chào, ${profile.full_name}`;
+        if(userAvatarEl && profile.avatar_url) {
+            userAvatarEl.src = profile.avatar_url;
         }
+    } else {
+        // **TRƯỜNG HỢP 2: KHÔNG LỖI, NHƯNG KHÔNG TÌM THẤY PROFILE (data: null)**
+        // Đây là lỗi logic tôi đã bỏ sót. Hiển thị tạm email.
+        console.warn('Không tìm thấy profile cho user ID:', session.user.id);
+        if(userGreetingEl) userGreetingEl.textContent = `Chào, ${session.user.email} (Chưa tạo hồ sơ)`;
     }
 }
 
