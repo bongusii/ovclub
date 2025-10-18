@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLB Ong Vàng - Đăng nhập nội bộ</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ongvang: {
+                            DEFAULT: '#FFC107',
+                            dark: '#FFA000',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
+            
+            <div>
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    Đăng nhập hệ thống
+                </h2>
+                <p class="mt-2 text-center text-sm text-gray-600">
+                    Dành riêng cho thành viên CLB Ong Vàng
+                </p>
+            </div>
+            
+            <form id="login-form" class="mt-8 space-y-6">
+                
+                <div class="rounded-md shadow-sm -space-y-px">
+                    <div>
+                        <label for="email" class="sr-only">Email</label>
+                        <input id="email" name="email" type="email" autocomplete="email" required 
+                               class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-ongvang focus:border-ongvang focus:z-10 sm:text-sm" 
+                               placeholder="Email của bạn">
+                    </div>
+                    <div>
+                        <label for="password" class="sr-only">Mật khẩu</label>
+                        <input id="password" name="password" type="password" autocomplete="current-password" required 
+                               class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-ongvang focus:border-ongvang focus:z-10 sm:text-sm" 
+                               placeholder="Mật khẩu">
+                    </div>
+                </div>
+
+                <div id="error-message" class="text-sm text-red-600 hidden">
+                    </div>
+
+                <div>
+                    <button type="submit" 
+                            class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-full text-white bg-ongvang hover:bg-ongvang-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-ongvang-dark transition duration-300">
+                        Đăng nhập
+                    </button>
+                </div>
+            </form>
+
+            <p class="mt-4 text-center text-sm text-gray-500">
+                <a href="/" class="font-medium text-ongvang-dark hover:text-ongvang">
+                    &larr; Quay lại trang chủ
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script src="./auth.js"></script>
+
+</body>
+</html>

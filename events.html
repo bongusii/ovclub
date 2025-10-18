@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale-1.0">
+    <title>CLB Ong Vàng - Sự kiện</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ongvang: {
+                            DEFAULT: '#FFC107',
+                            dark: '#FFA000',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/" class="text-2xl font-bold text-ongvang-dark hover:text-ongvang">
+                CLB ONG VÀNG
+            </a>
+            
+            <div class="hidden md:flex space-x-6">
+                <a href="/" class="text-gray-700 font-semibold hover:text-ongvang-dark border-b-2 border-ongvang">Trang chủ</a>
+                <a href="/about.html" class="text-gray-700 hover:text-ongvang-dark">Giới thiệu</a>
+                <a href="events.html" class="text-gray-700 hover:text-ongvang-dark">Sự kiện</a>
+                <a href="contact.html" class="text-gray-700 hover:text-ongvang-dark">Liên hệ</a>
+            </div>
+
+            <a href="/login.html" class="hidden md:block bg-ongvang hover:bg-ongvang-dark text-white font-bold py-2 px-4 rounded-full transition duration-300">
+                Đăng nhập
+            </a>
+
+            <div class="md:hidden">
+                <button class="text-gray-700 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="bg-gray-800 text-white py-16">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl font-extrabold">Hoạt động & Sự kiện</h1>
+            <p class="text-lg mt-2">Nơi cập nhật những sự kiện nóng hổi và thư viện hoạt động của CLB.</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-16">
+
+        <section id="sap-dien-ra">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-10">Sự Kiện Sắp Diễn Ra</h2>
+        
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+                    <img src="https://via.placeholder.com/400x250/FACC15/333333?text=Poster+Workshop" alt="Poster Sự kiện" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <span class="text-sm text-gray-500">25/10/2025 | Hội trường A</span>
+                        <h3 class="text-xl font-bold text-gray-900 mt-2 mb-3">Workshop: Kỹ năng tổ chức sự kiện A-Z</h3>
+                        <p class="text-gray-600 mb-5">Học hỏi từ các chuyên gia để tạo nên những sự kiện thành công...</p>
+                        <a href="#" class="w-full text-center inline-block bg-ongvang hover:bg-ongvang-dark text-white font-bold py-2 px-4 rounded-full transition duration-300">
+                            Đăng ký ngay
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+                    <img src="https://via.placeholder.com/400x250/FACC15/333333?text=Poster+Đại+nhạc+hội" alt="Poster Sự kiện" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <span class="text-sm text-gray-500">15/11/2025 | Sân vận động</span>
+                        <h3 class="text-xl font-bold text-gray-900 mt-2 mb-3">Đại nhạc hội Chào Tân Sinh Viên</h3>
+                        <p class="text-gray-600 mb-5">Một đêm nhạc bùng nổ với sự góp mặt của các ca sĩ khách mời...</p>
+                        <a href="#" class="w-full text-center inline-block bg-ongvang hover:bg-ongvang-dark text-white font-bold py-2 px-4 rounded-full transition duration-300">
+                            Đăng ký ngay
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+                    <img src="https://via.placeholder.com/400x250/FACC15/333333?text=Poster+Cuộc+thi" alt="Poster Sự kiện" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <span class="text-sm text-gray-500">01/12/2025 | Trực tuyến</span>
+                        <h3 class="text-xl font-bold text-gray-900 mt-2 mb-3">Cuộc thi Sáng tạo Nội dung</h3>
+                        <p class="text-gray-600 mb-5">Thể hiện tài năng thiết kế, quay dựng video của bạn...</p>
+                        <a href="#" class="w-full text-center inline-block bg-ongvang hover:bg-ongvang-dark text-white font-bold py-2 px-4 rounded-full transition duration-300">
+                            Tìm hiểu thêm
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <hr class="my-16 border-gray-200">
+
+        <section id="da-dien-ra">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-10">Thư Viện Hoạt Động</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <img src="https://via.placeholder.com/400x250/9CA3AF/FFFFFF?text=Team+Building+2024" alt="Poster Sự kiện" class="w-full h-48 object-cover filter grayscale">
+                    <div class="p-6">
+                        <span class="text-sm text-gray-500">20/05/2025</span>
+                        <h3 class="text-xl font-bold text-gray-900 mt-2 mb-3">Team Building "Gắn kết Ong Vàng"</h3>
+                        <p class="text-gray-600 mb-5">Chuyến đi đáng nhớ tại Vũng Tàu với nhiều trò chơi đồng đội...</p>
+                        <a href="#" class="font-semibold text-ongvang-dark hover:text-ongvang">
+                            Xem bài tổng kết &rarr;
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <img src="https://via.placeholder.com/400x250/9CA3AF/FFFFFF?text=Talkshow+2024" alt="Poster Sự kiện" class="w-full h-48 object-cover filter grayscale">
+                    <div class="p-6">
+                        <span class="text-sm text-gray-500">10/03/2025</span>
+                        <h3 class="text-xl font-bold text-gray-900 mt-2 mb-3">Talkshow: Gen Z và Truyền thông</h3>
+                        <p class="text-gray-600 mb-5">Buổi trò chuyện cùng diễn giả khách mời nổi tiếng...</p>
+                        <a href="#" class="font-semibold text-ongvang-dark hover:text-ongvang">
+                            Xem bài tổng kết &rarr;
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <img src="https://via.placeholder.com/400x250/9CA3AF/FFFFFF?text=Tình+nguyện+2024" alt="Poster Sự kiện" class="w-full h-48 object-cover filter grayscale">
+                    <div class="p-6">
+                        <span class="text-sm text-gray-500">20/01/2025</span>
+                        <h3 class="text-xl font-bold text-gray-900 mt-2 mb-3">Chiến dịch "Xuân Yêu Thương"</h3>
+                        <p class="text-gray-600 mb-5">Gây quỹ và trao quà Tết cho các hoàn cảnh khó khăn...</p>
+                        <a href="#" class="font-semibold text-ongvang-dark hover:text-ongvang">
+                            Xem bài tổng kết &rarr;
+                        </a>
+                    </div>
+                </div>
+                </div>
+            
+            <div class="text-center mt-12">
+                <a href="#" class="bg-white border border-gray-300 text-gray-700 font-bold py-2 px-6 rounded-full hover:bg-gray-100 transition duration-300">
+                    Xem thêm
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+
+    <footer class="bg-gray-800 text-white py-10 mt-16">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-xl font-bold mb-2">CLB Ong Vàng</p>
+            <p class="mb-4">Theo dõi chúng tôi trên các nền tảng mạng xã hội</p>
+            <p class="text-gray-400 text-sm mt-6">
+                &copy; 2025 CLB Ong Vàng. Phát triển bởi [Tên của bạn].
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./app.js"></script>
+
+</body>
+</html>
