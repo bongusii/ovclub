@@ -23,8 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Chạy các hàm khởi tạo
-    checkUserSession();
-    loadMembers();
+    checkUserSession(); // Bảo vệ trang
+    loadMembers(); // Tải dữ liệu
 });
 
 // 3. BẢO VỆ TRANG
@@ -34,8 +34,6 @@ async function checkUserSession() {
         // Nếu chưa đăng nhập, đá về trang login
         window.location.href = './login.html';
     }
-    // (Chúng ta không cần hiển thị tên người dùng ở đây, 
-    // vì file này chỉ tập trung vào việc tải danh sách thành viên)
 }
 
 // 4. TẢI DỮ LIỆU THÀNH VIÊN
@@ -87,7 +85,7 @@ async function loadMembers() {
                     </div>
                     <div class="ml-4">
                         <div class="text-sm font-medium text-gray-900">${member.full_name || 'Chưa cập nhật'}</div>
-                        </div>
+                    </div>
                 </div>
             </td>
             
@@ -105,7 +103,7 @@ async function loadMembers() {
             
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <a href="#" class="text-indigo-600 hover:text-indigo-900">Sửa</a>
-                </td>
+            </td>
         `;
         
         tableBody.appendChild(row);
