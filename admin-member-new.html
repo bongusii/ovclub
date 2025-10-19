@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm Thành viên Mới - CLB Ong Vàng</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ongvang: {
+                            DEFAULT: '#FFC107',
+                            dark: '#FFA000',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100">
+
+    <div class="flex h-screen">
+        <div class="w-64 bg-gray-800 text-white flex flex-col">
+            <div class="bg-gray-900 text-ongvang font-bold text-xl p-4 text-center">
+                CLB Ong Vàng
+                <span class="block text-sm text-gray-300">Hệ thống Quản lý</span>
+            </div>
+            <nav class="flex-1 p-4 space-y-2">
+                <a href="./dashboard.html" class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700">
+                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg> <span>Tổng quan</span>
+                </a>
+                <a href="./admin-members.html" class="flex items-center space-x-2 p-2 rounded-md bg-ongvang text-gray-900 font-semibold">
+                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg> <span>Thành viên</span>
+                </a>
+                <a href="./admin-events.html" class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700">
+                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg> <span>Sự kiện</span>
+                </a>
+                <a href="./admin-tasks.html" class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700">
+                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg> <span>Công việc</span>
+                </a>
+                <a href="./admin-resources.html" class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700">
+                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg> <span>Tài liệu</span>
+                </a>
+                <a href="./admin-designs.html" class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700">
+                   <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg> <span>Yêu cầu Thiết kế</span>
+                </a>
+            </nav>
+            <div class="p-4">
+                <button id="logout-button" class="flex items-center space-x-2 w-full p-2 rounded-md text-red-400 hover:bg-red-600 hover:text-white transition duration-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg> <span>Đăng xuất</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <header class="bg-white shadow-sm p-4">
+                <h1 class="text-2xl font-bold text-gray-800">Thêm Thành viên Mới</h1>
+            </header>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                
+                <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
+                    
+                    <form id="member-form" class="space-y-6">
+
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email (dùng để đăng nhập) *</label>
+                            <input type="email" id="email" name="email" required autocomplete="email"
+                                   class="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-ongvang focus:ring focus:ring-ongvang focus:ring-opacity-50">
+                        </div>
+
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700">Mật khẩu *</label>
+                            <input type="password" id="password" name="password" required autocomplete="new-password" minlength="6"
+                                   class="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-ongvang focus:ring focus:ring-ongvang focus:ring-opacity-50">
+                            <p class="text-xs text-gray-500 mt-1">Ít nhất 6 ký tự.</p>
+                        </div>
+                        
+                        <div>
+                            <label for="confirm_password" class="block text-sm font-medium text-gray-700">Xác nhận mật khẩu *</label>
+                            <input type="password" id="confirm_password" name="confirm_password" required autocomplete="new-password" minlength="6"
+                                   class="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-ongvang focus:ring focus:ring-ongvang focus:ring-opacity-50">
+                        </div>
+
+                        <hr/>
+
+                        <div>
+                            <label for="full_name" class="block text-sm font-medium text-gray-700">Họ và tên đầy đủ *</label>
+                            <input type="text" id="full_name" name="full_name" required
+                                   class="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-ongvang focus:ring focus:ring-ongvang focus:ring-opacity-50">
+                        </div>
+
+                        <div>
+                            <label for="role" class="block text-sm font-medium text-gray-700">Vai trò/Mảng *</label>
+                            <select id="role" name="role" required
+                                    class="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-ongvang focus:ring focus:ring-ongvang focus:ring-opacity-50">
+                                <option value="">-- Chọn vai trò --</option>
+                                <option value="thanh_vien_sk">Thành viên Sự kiện</option>
+                                <option value="thanh_vien_tt">Thành viên Truyền thông</option>
+                                <option value="truong_mang_sk">Trưởng mảng Sự kiện</option>
+                                <option value="truong_mang_tt">Trưởng mảng Truyền thông</option>
+                                <option value="pho_chu_nhiem">Phó Chủ nhiệm</option>
+                                <option value="chu_nhiem">Chủ nhiệm</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="mem_id" class="block text-sm font-medium text-gray-700">Mã số thành viên (Tùy chọn)</label>
+                            <input type="text" id="mem_id" name="mem_id"
+                                   class="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-ongvang focus:ring focus:ring-ongvang focus:ring-opacity-50">
+                        </div>
+                        
+                        <input type="hidden" id="is_active" name="is_active" value="true">
+
+                        <div id="form-message" class="hidden text-sm"></div>
+
+                        <div class="flex justify-end space-x-4 pt-4 border-t border-gray-200">
+                            <a href="./admin-members.html" class="bg-white py-2 px-4 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 border border-gray-300">
+                                Hủy
+                            </a>
+                            <button type="submit" id="submit-button"
+                                    class="bg-ongvang hover:bg-ongvang-dark text-white font-bold py-2 px-4 rounded-md shadow-sm transition duration-300">
+                                Tạo thành viên
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script src="./admin-member-new.js"></script>
+
+</body>
+</html>

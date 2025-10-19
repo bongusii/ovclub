@@ -117,8 +117,8 @@ function formatRole(roleKey) {
         'pho_chu_nhiem': 'Phó Chủ nhiệm',
         'truong_mang_sk': 'Trưởng mảng Sự kiện',
         'truong_mang_tt': 'Trưởng mảng Truyền thông',
-        'thanh_vien_sk': 'TV Sự kiện',
-        'thanh_vien_tt': 'TV Truyền thông'
+        'thanh_vien_sk': 'Thành viên mảng Sự kiện',
+        'thanh_vien_tt': 'Thành viên mảng Truyền thông'
     };
     return roles[roleKey] || (roleKey ? roleKey.replace('_', ' ') : 'Chưa phân');
 }
