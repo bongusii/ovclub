@@ -8,10 +8,7 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // 2. HÀM CHẠY SAU KHI HTML ĐÃ TẢI XONG
 document.addEventListener('DOMContentLoaded', () => {
-    // Lấy các thành tố HTML
     const logoutButton = document.getElementById('logout-button');
-    
-    // Gắn sự kiện Đăng xuất
     if(logoutButton) {
         logoutButton.addEventListener('click', async () => {
             const { error } = await supabase.auth.signOut();
@@ -22,17 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    // Chạy các hàm khởi tạo
-    checkUserSession(); // Bảo vệ trang
-    loadTasks(); // Tải dữ liệu công việc
+    checkUserSession();
+    loadTasks();
 });
 
 // 3. BẢO VỆ TRANG
 async function checkUserSession() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
-        // Nếu chưa đăng nhập, đá về trang login
         window.location.href = './login.html';
     }
 }
@@ -42,10 +36,7 @@ async function loadTasks() {
     const tableBody = document.getElementById('tasks-table-body');
     if (!tableBody) return;
 
-    // Đây là một câu query phức tạp (JOIN 3 bảng)
-    // Lấy tất cả cột từ 'tasks'
-    // Lấy cột 'title' từ bảng 'projects' (liên kết qua 'project_id')
-    // Lấy cột 'full_name' từ bảng 'profiles' (liên kết qua 'assignee_id')
+    // THAY ĐỔI: JOIN với 'events' thay vì 'projects'
     const { data: tasks, error } = await supabase
         .from('tasks')
         .select(`
@@ -53,10 +44,10 @@ async function loadTasks() {
             title,
             due_date,
             status,
-            projects ( title ),
+            events ( title ),
             profiles ( full_name )
         `)
-        .order('due_date', { ascending: true, nullsFirst: false }); // Sắp xếp theo deadline
+        .order('due_date', { ascending: true, nullsFirst: false }); 
 
     if (error) {
         console.error('Lỗi khi tải danh sách công việc:', error);
@@ -64,32 +55,22 @@ async function loadTasks() {
         return;
     }
 
-    // Nếu không có công việc nào
     if (tasks.length === 0) {
         tableBody.innerHTML = `<tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Chưa có công việc nào được giao.</td></tr>`;
         return;
     }
 
-    // Xóa dòng "Đang tải..." mẫu
     tableBody.innerHTML = '';
 
-    // Lặp qua từng công việc và tạo hàng (row) mới
     tasks.forEach(task => {
         const row = document.createElement('tr');
         
-        // Lấy dữ liệu JOIN một cách an toàn (tránh lỗi nếu bị null)
-        // task.projects là một object { title: '...' }
-        const projectName = task.projects ? task.projects.title : 'Dự án chung';
-        
-        // task.profiles là một object { full_name: '...' }
+        // THAY ĐỔI: Lấy tên sự kiện
+        const eventName = task.events ? task.events.title : 'Sự kiện chung';
         const assigneeName = task.profiles ? task.profiles.full_name : 'Chưa gán';
-
-        // Định dạng ngày (dd/mm/yyyy)
         const dueDate = task.due_date 
             ? new Date(task.due_date).toLocaleDateString('vi-VN') 
             : 'N/A';
-            
-        // Định dạng trạng thái (status)
         const statusBadge = formatTaskStatus(task.status);
 
         row.innerHTML = `
@@ -98,7 +79,7 @@ async function loadTasks() {
             </td>
             
             <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-500">${projectName}</div>
+                <div class="text-sm text-gray-500">${eventName}</div>
             </td>
             
             <td class="px-6 py-4 whitespace-nowrap">

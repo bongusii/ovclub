@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Công việc Mới - CLB Ong Vàng</title>
+    <title>Tải lên Tài liệu Mới - CLB Ong Vàng</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -40,10 +40,10 @@
                 <a href="./admin-events.html" class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700">
                    <span>Sự kiện</span>
                 </a>
-                <a href="./admin-tasks.html" class="flex items-center space-x-2 p-2 rounded-md bg-ongvang text-gray-900 font-semibold">
+                <a href="./admin-tasks.html" class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700">
                    <span>Công việc</span>
                 </a>
-                <a href="./admin-resources.html" class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700">
+                <a href="./admin-resources.html" class="flex items-center space-x-2 p-2 rounded-md bg-ongvang text-gray-900 font-semibold">
                    <span>Tài liệu</span>
                 </a>
                 <a href="./admin-designs.html" class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700">
@@ -59,54 +59,53 @@
 
         <div class="flex-1 flex flex-col overflow-hidden">
             <header class="bg-white shadow-sm p-4">
-                <h1 class="text-2xl font-bold text-gray-800">Tạo Công việc Mới</h1>
+                <h1 class="text-2xl font-bold text-gray-800">Tải lên Tài liệu Mới</h1>
             </header>
 
             <main class="flex-1 overflow-y-auto p-6">
                 
                 <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
                     
-                    <form id="task-form" class="space-y-6">
+                    <form id="resource-form" class="space-y-6">
 
                         <div>
-                            <label for="title" class="block text-sm font-medium text-gray-700">Tên công việc *</label>
+                            <label for="title" class="block text-sm font-medium text-gray-700">Tên tài liệu *</label>
                             <input type="text" id="title" name="title" required
-                                   class="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-ongvang focus:ring focus:ring-ongvang focus:ring-opacity-50">
-                        </div>
-
-                        <div>
-                            <label for="event_id" class="block text-sm font-medium text-gray-700">Thuộc sự kiện *</label>
-                            <select id="event_id" name="event_id" required
-                                    class="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-ongvang focus:ring focus:ring-ongvang focus:ring-opacity-50">
-                                <option value="">Đang tải danh sách sự kiện...</option>
-                                </select>
+                                   class="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-ongvang focus:ring focus:ring-ongvang focus:ring-opacity-50"
+                                   placeholder="Ví dụ: Kịch bản mẫu, Bộ nhận diện thương hiệu...">
                         </div>
                         
                         <div>
-                            <label for="assignee_id" class="block text-sm font-medium text-gray-700">Giao cho thành viên *</label>
-                            <select id="assignee_id" name="assignee_id" required
+                            <label for="category" class="block text-sm font-medium text-gray-700">Phân loại *</label>
+                            <select id="category" name="category" required
                                     class="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-ongvang focus:ring focus:ring-ongvang focus:ring-opacity-50">
-                                <option value="">Đang tải danh sách thành viên...</option>
-                                </select>
-                        </div>
-
-                        <div>
-                            <label for="due_date" class="block text-sm font-medium text-gray-700">Deadline (Ngày hết hạn)</label>
-                            <input type="date" id="due_date" name="due_date"
-                                   class="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-ongvang focus:ring focus:ring-ongvang focus:ring-opacity-50">
+                                <option value="">-- Chọn phân loại --</option>
+                                <option value="Chung">Chung</option>
+                                <option value="Sự kiện">Sự kiện</option>
+                                <option value="Truyền thông">Truyền thông</option>
+                            </select>
                         </div>
                         
-                        <input type="hidden" id="status" name="status" value="Mới">
+                        <div>
+                            <label for="file_input" class="block text-sm font-medium text-gray-700">Chọn file *</label>
+                            <input type="file" id="file_input" name="file_input" required
+                                   class="mt-1 block w-full text-sm text-gray-500
+                                          file:mr-4 file:py-2 file:px-4
+                                          file:rounded-full file:border-0
+                                          file:text-sm file:font-semibold
+                                          file:bg-ongvang-dark file:text-white
+                                          hover:file:bg-ongvang">
+                        </div>
 
                         <div id="form-message" class="hidden text-sm"></div>
 
                         <div class="flex justify-end space-x-4 pt-4 border-t border-gray-200">
-                            <a href="./admin-tasks.html" class="bg-white py-2 px-4 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 border border-gray-300">
+                            <a href="./admin-resources.html" class="bg-white py-2 px-4 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 border border-gray-300">
                                 Hủy
                             </a>
-                            <button type="submit"
+                            <button type="submit" id="submit-button"
                                     class="bg-ongvang hover:bg-ongvang-dark text-white font-bold py-2 px-4 rounded-md shadow-sm transition duration-300">
-                                Lưu công việc
+                                Tải lên
                             </button>
                         </div>
 
@@ -119,7 +118,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <script src="./admin-task-new.js"></script>
+    <script src="./admin-resource-new.js"></script>
 
 </body>
 </html>

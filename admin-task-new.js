@@ -8,7 +8,6 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // 2. HÀM CHẠY SAU KHI HTML ĐÃ TẢI XONG
 document.addEventListener('DOMContentLoaded', () => {
-    // Lấy các thành tố HTML
     const logoutButton = document.getElementById('logout-button');
     const taskForm = document.getElementById('task-form');
     
@@ -30,31 +29,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Chạy các hàm khởi tạo
-    checkUserSession(); // Bảo vệ trang
-    
-    // Tải dữ liệu cho 2 ô <select>
-    loadProjects(); 
-    loadAssignees();
+    checkUserSession(); 
+    loadEventsForTasks(); // Tải Sự kiện
+    loadAssignees(); // Tải Thành viên
 });
 
 // 3. BẢO VỆ TRANG
 async function checkUserSession() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
-        // Nếu chưa đăng nhập, đá về trang login
         window.location.href = './login.html';
     }
 }
 
-// 4. TẢI DỮ LIỆU CHO Ô CHỌN (DROPDOWN) DỰ ÁN
-async function loadProjects() {
-    const selectEl = document.getElementById('event_id');
+// 4. TẢI DỮ LIỆU CHO Ô CHỌN (DROPDOWN) SỰ KIỆN
+async function loadEventsForTasks() {
+    const selectEl = document.getElementById('event_id'); 
     if (!selectEl) return;
 
-    const { data: events, error } = await supabase
+    // Lấy dữ liệu từ bảng 'events'
+    const { data: events, error } = await supabase 
         .from('events')
         .select('id, title')
-        .order('title');
+        .order('event_date', { ascending: false }); // Lấy sự kiện mới nhất lên đầu
 
     if (error) {
         console.error('Lỗi tải sự kiện:', error);
@@ -62,13 +59,13 @@ async function loadProjects() {
         return;
     }
 
-    // Xóa lựa chọn "Đang tải..."
+    // Xóa dòng "Đang tải..."
     selectEl.innerHTML = '<option value="">-- Chọn một sự kiện --</option>';
     
-    projects.forEach(project => {
+    events.forEach(event => {
         const option = document.createElement('option');
-        option.value = events.id;
-        option.textContent = events.title;
+        option.value = event.id;
+        option.textContent = event.title;
         selectEl.appendChild(option);
     });
 }
@@ -78,6 +75,7 @@ async function loadAssignees() {
     const selectEl = document.getElementById('assignee_id');
     if (!selectEl) return;
 
+    // Lấy dữ liệu từ bảng 'profiles'
     const { data: profiles, error } = await supabase
         .from('profiles')
         .select('id, full_name')
@@ -90,7 +88,7 @@ async function loadAssignees() {
         return;
     }
 
-    // Xóa lựa chọn "Đang tải..."
+    // Xóa dòng "Đang tải..."
     selectEl.innerHTML = '<option value="">-- Giao cho... --</option>';
     
     profiles.forEach(profile => {
@@ -103,49 +101,44 @@ async function loadAssignees() {
 
 // 6. HÀM XỬ LÝ KHI GỬI FORM
 async function handleFormSubmit(event) {
-    // Ngăn trang tải lại
     event.preventDefault(); 
     
     const formMessage = document.getElementById('form-message');
     const form = event.target;
     
-    // Lấy dữ liệu từ form
     const formData = new FormData(form);
+    
+    // Lấy dữ liệu từ form, dùng 'event_id'
     const taskData = {
         title: formData.get('title'),
-        project_id: formData.get('project_id'),
+        event_id: formData.get('event_id'), // Đã thay đổi
         assignee_id: formData.get('assignee_id'),
-        // Xử lý 'due_date' (nếu không chọn, nó sẽ là chuỗi rỗng)
-        due_date: formData.get('due_date') || null, // Chuyển chuỗi rỗng thành 'null' cho database
-        status: formData.get('status') // Mặc định là 'Mới' (từ input 'hidden')
+        due_date: formData.get('due_date') || null, 
+        status: formData.get('status')
     };
 
     // 7. GỌI SUPABASE ĐỂ INSERT DỮ LIỆU
     const { data, error } = await supabase
         .from('tasks')
-        .insert([taskData]) // Phải insert một mảng các object
-        .select(); // Trả về dữ liệu đã được insert
+        .insert([taskData])
+        .select(); 
 
     if (error) {
-        // Nếu có lỗi
         console.error('Lỗi khi tạo công việc:', error);
         showMessage(`Lỗi: ${error.message}`, 'error');
     } else {
-        // Nếu thành công
         console.log('Tạo công việc thành công:', data);
         showMessage('Tạo công việc thành công! Đang chuyển hướng...', 'success');
         
-        // Vô hiệu hóa nút bấm để tránh double-click
         form.querySelector('button[type="submit"]').disabled = true;
 
-        // Chờ 2 giây rồi chuyển về trang danh sách
         setTimeout(() => {
             window.location.href = './admin-tasks.html';
         }, 2000);
     }
 }
 
-// 7. HÀM HỖ TRỢ: Hiển thị thông báo
+// 8. HÀM HỖ TRỢ: Hiển thị thông báo
 function showMessage(message, type = 'error') {
     const formMessage = document.getElementById('form-message');
     if (!formMessage) return;
