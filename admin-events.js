@@ -10,7 +10,7 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 document.addEventListener('DOMContentLoaded', () => {
     // Lấy các thành tố HTML
     const logoutButton = document.getElementById('logout-button');
-    
+
     // Gắn sự kiện Đăng xuất
     if(logoutButton) {
         logoutButton.addEventListener('click', async () => {
@@ -67,7 +67,7 @@ async function loadEvents() {
     // Lặp qua từng sự kiện và tạo hàng (row) mới
     events.forEach(event => {
         const row = document.createElement('tr');
-        
+
         // Định dạng ngày cho dễ đọc (dd/mm/yyyy hh:mm)
         const eventDate = new Date(event.event_date).toLocaleString('vi-VN', {
             day: '2-digit',
@@ -76,11 +76,9 @@ async function loadEvents() {
             hour: '2-digit',
             minute: '2-digit'
         });
-        
+
         // Định dạng trạng thái (status)
-        // Kiểm tra xem sự kiện đã diễn ra chưa
         const isPastEvent = new Date(event.event_date) < new Date();
-        
         let statusBadge;
         if (isPastEvent) {
              statusBadge = `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Đã diễn ra</span>`;
@@ -95,24 +93,24 @@ async function loadEvents() {
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm font-medium text-gray-900">${event.title}</div>
             </td>
-            
+
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm text-gray-900">${eventDate}</div>
             </td>
-            
+
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm text-gray-900">${event.location || 'N/A'}</div>
             </td>
-            
+
             <td class="px-6 py-4 whitespace-nowrap">
                 ${statusBadge}
             </td>
-            
+
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <a href="#" class="text-indigo-600 hover:text-indigo-900">Sửa</a>
+                <a href="./admin-event-edit.html?id=${event.id}" class="text-indigo-600 hover:text-indigo-900">Sửa</a>
                 </td>
         `;
-        
+
         tableBody.appendChild(row);
     });
 }

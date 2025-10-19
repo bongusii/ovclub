@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Lấy các thành tố HTML
     const logoutButton = document.getElementById('logout-button');
     const eventForm = document.getElementById('event-form');
-    
+
     // Gắn sự kiện Đăng xuất
     if(logoutButton) {
         logoutButton.addEventListener('click', async () => {
@@ -45,9 +45,10 @@ async function checkUserSession() {
 // 4. HÀM XỬ LÝ KHI GỬI FORM
 async function handleFormSubmit(event) {
     // Ngăn trang tải lại
-    event.preventDefault(); 
-    
+    event.preventDefault();
+
     const formMessage = document.getElementById('form-message');
+    const submitButton = document.getElementById('submit-button'); // Lấy nút submit
     const form = event.target;
 
     // Lấy thông tin người dùng đang đăng nhập (để điền vào 'created_by')
@@ -56,37 +57,56 @@ async function handleFormSubmit(event) {
         showMessage('Lỗi: Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại.', 'error');
         return;
     }
-    
+
     // Lấy dữ liệu từ form
     const formData = new FormData(form);
+
+    // XỬ LÝ THỜI GIAN
+    const localDateTimeString = formData.get('event_date');
+    let isoDateTimeString = null;
+    if (localDateTimeString) {
+        // Chỉ chuyển đổi nếu người dùng đã nhập ngày giờ
+        const dateObject = new Date(localDateTimeString);
+        isoDateTimeString = dateObject.toISOString(); // Chuyển sang UTC
+    } else {
+        showMessage('Vui lòng chọn ngày giờ diễn ra.', 'error'); // Bắt lỗi nếu chưa chọn
+        return;
+    }
+
+
     const eventData = {
         title: formData.get('title'),
-        event_date: formData.get('event_date'),
+        event_date: isoDateTimeString, // Gửi chuỗi UTC
         location: formData.get('location'),
         description: formData.get('description'),
-        // Tùy chọn checkbox (nó trả về 'on' nếu được check)
-        is_public: formData.get('is_public') === 'on', 
-        // Lấy ID của người tạo
-        created_by: user.id 
+        is_public: formData.get('is_public') === 'on',
+        created_by: user.id
     };
+
+    // Vô hiệu hóa nút bấm và hiển thị trạng thái
+    if(submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Đang lưu...';
+    }
+    showMessage('Đang tạo sự kiện...', 'success');
 
     // 5. GỌI SUPABASE ĐỂ INSERT DỮ LIỆU
     const { data, error } = await supabase
         .from('events')
-        .insert([eventData]) // Phải insert một mảng các object
-        .select(); // Trả về dữ liệu đã được insert
+        .insert([eventData])
+        .select();
 
     if (error) {
-        // Nếu có lỗi
         console.error('Lỗi khi tạo sự kiện:', error);
         showMessage(`Lỗi: ${error.message}`, 'error');
+        // Kích hoạt lại nút nếu có lỗi
+        if(submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Lưu sự kiện';
+        }
     } else {
-        // Nếu thành công
         console.log('Tạo sự kiện thành công:', data);
         showMessage('Tạo sự kiện thành công! Đang chuyển hướng...', 'success');
-        
-        // Vô hiệu hóa nút bấm để tránh double-click
-        form.querySelector('button[type="submit"]').disabled = true;
 
         // Chờ 2 giây rồi chuyển về trang danh sách
         setTimeout(() => {
@@ -102,7 +122,7 @@ function showMessage(message, type = 'error') {
 
     formMessage.textContent = message;
     formMessage.classList.remove('hidden');
-    
+
     if (type === 'error') {
         formMessage.classList.add('text-red-600');
         formMessage.classList.remove('text-green-600');
