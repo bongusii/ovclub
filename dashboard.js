@@ -8,28 +8,24 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // 2. HÀM CHẠY SAU KHI HTML ĐÃ TẢI XONG
 document.addEventListener('DOMContentLoaded', () => {
-    // --- BỌC TẤT CẢ LOGIC THỰC THI VÀO ĐÂY ---
-
-    // 2.1. Lấy các thành tố HTML (Bây giờ đã an toàn)
+    // Lấy các thành tố HTML
     const logoutButton = document.getElementById('logout-button');
-
-    // 2.2. Gắn sự kiện Đăng xuất (Bây giờ đã an toàn)
-    if (logoutButton) {
+    
+    // Gắn sự kiện Đăng xuất
+    if(logoutButton) {
         logoutButton.addEventListener('click', async () => {
             const { error } = await supabase.auth.signOut();
-            
-            if (error) {
-                console.error('Lỗi khi đăng xuất:', error);
-            } else {
-                // Đăng xuất thành công, chuyển về trang login
+            if (!error) {
                 window.location.href = './login.html';
+            } else {
+                console.error('Lỗi khi đăng xuất:', error);
             }
         });
     }
 
-    // 2.3. Chạy các hàm khởi tạo
-    checkUserSession();
-    loadDashboardStats();
+    // Chạy các hàm khởi tạo
+    checkUserSession(); // Bảo vệ trang
+    loadEvents(); // Tải dữ liệu sự kiện
 });
 
 // 3. BẢO VỆ TRANG & LẤY THÔNG TIN NGƯỜI DÙNG (Định nghĩa hàm)
