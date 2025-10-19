@@ -94,7 +94,7 @@ async function loadMembers() {
             </td>
             
             <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">${member.student_id || 'N/A'}</div>
+                <div class="text-sm text-gray-900">${member.mem_id || 'N/A'}</div>
             </td>
             
             <td class="px-6 py-4 whitespace-nowrap">
