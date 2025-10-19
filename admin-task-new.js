@@ -48,27 +48,27 @@ async function checkUserSession() {
 
 // 4. TẢI DỮ LIỆU CHO Ô CHỌN (DROPDOWN) DỰ ÁN
 async function loadProjects() {
-    const selectEl = document.getElementById('project_id');
+    const selectEl = document.getElementById('event_id');
     if (!selectEl) return;
 
-    const { data: projects, error } = await supabase
-        .from('projects')
+    const { data: events, error } = await supabase
+        .from('events')
         .select('id, title')
         .order('title');
 
     if (error) {
-        console.error('Lỗi tải dự án:', error);
+        console.error('Lỗi tải sự kiện:', error);
         selectEl.innerHTML = '<option value="">Lỗi tải danh sách</option>';
         return;
     }
 
     // Xóa lựa chọn "Đang tải..."
-    selectEl.innerHTML = '<option value="">-- Chọn một dự án --</option>';
+    selectEl.innerHTML = '<option value="">-- Chọn một sự kiện --</option>';
     
     projects.forEach(project => {
         const option = document.createElement('option');
-        option.value = project.id;
-        option.textContent = project.title;
+        option.value = events.id;
+        option.textContent = events.title;
         selectEl.appendChild(option);
     });
 }
