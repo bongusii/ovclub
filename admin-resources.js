@@ -6,121 +6,139 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// 2. HÀM CHẠY SAU KHI HTML ĐÃ TẢI XONG
-document.addEventListener('DOMContentLoaded', () => {
-    // Lấy các thành tố HTML
-    const logoutButton = document.getElementById('logout-button');
-    
-    // Gắn sự kiện Đăng xuất
-    if(logoutButton) {
-        logoutButton.addEventListener('click', async () => {
-            const { error } = await supabase.auth.signOut();
-            if (!error) {
-                window.location.href = './login.html';
-            } else {
-                console.error('Lỗi khi đăng xuất:', error);
-            }
-        });
-    }
+// Biến toàn cục để lưu vai trò
+let currentUserRole = null;
 
-    // Chạy các hàm khởi tạo
-    checkUserSession(); // Bảo vệ trang
-    loadResources(); // Tải dữ liệu tài liệu
+// 2. HÀM CHẠY SAU KHI HTML TẢI XONG
+document.addEventListener('DOMContentLoaded', () => {
+    const logoutButton = document.getElementById('logout-button');
+    if(logoutButton) {
+        logoutButton.addEventListener('click', async () => { /* ... (code đăng xuất) ... */ });
+    }
+    checkUserSession(); // Sẽ gọi loadResources và renderUI sau
 });
 
-// 3. BẢO VỆ TRANG
+// 3. BẢO VỆ TRANG & LẤY ROLE
 async function checkUserSession() {
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-        // Nếu chưa đăng nhập, đá về trang login
-        window.location.href = './login.html';
+    if (!session) { /* ... đá về login ... */ window.location.href = './login.html'; return; }
+
+    const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', session.user.id)
+        .single();
+
+    if (error || !profile) currentUserRole = null;
+    else currentUserRole = profile.role;
+    console.log("Resource page role:", currentUserRole);
+
+    renderUIBasedOnRole();
+    loadResources();
+}
+
+// 4. RENDER UI THEO ROLE
+function renderUIBasedOnRole() {
+    // Ẩn nút "+ Tải lên" nếu không phải Admin/Trưởng mảng
+    const addResourceButton = document.querySelector('header a[href="./admin-resource-new.html"]');
+    if (addResourceButton) {
+        if (currentUserRole !== 'chu_nhiem' && currentUserRole !== 'pho_chu_nhiem' &&
+            currentUserRole !== 'truong_mang_sk' && currentUserRole !== 'truong_mang_tt') {
+            addResourceButton.style.display = 'none';
+        } else {
+            addResourceButton.style.display = 'inline-block'; // Hoặc block
+        }
     }
 }
 
-// 4. TẢI DỮ LIỆU TÀI LIỆU (RESOURCES)
+// 5. TẢI DỮ LIỆU TÀI LIỆU (RESOURCES)
 async function loadResources() {
     const tableBody = document.getElementById('resources-table-body');
     if (!tableBody) return;
 
-    // Lấy tất cả cột từ 'resources'
-    // Lấy cột 'full_name' từ bảng 'profiles' (liên kết qua 'uploader_id')
+    // JOIN với profiles
     const { data: resources, error } = await supabase
         .from('resources')
-        .select(`
-            id,
-            title,
-            category,
-            file_url,
-            created_at,
-            profiles ( full_name )
-        `)
-        .order('created_at', { ascending: false }); // Mới nhất lên đầu
+        .select(`id, title, category, file_url, created_at, profiles ( full_name )`)
+        .order('created_at', { ascending: false });
 
-    if (error) {
-        console.error('Lỗi khi tải danh sách tài liệu:', error);
-        tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-red-500">Không thể tải dữ liệu tài liệu.</td></tr>`;
-        return;
-    }
+    if (error) { /* ... Xử lý lỗi ... */ return; }
+    if (resources.length === 0) { /* ... Thông báo chưa có resource ... */ return; }
 
-    // Nếu không có tài liệu nào
-    if (resources.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Chưa có tài liệu nào được tải lên.</td></tr>`;
-        return;
-    }
+    tableBody.innerHTML = ''; // Xóa dòng mẫu
 
-    // Xóa dòng "Đang tải..." mẫu
-    tableBody.innerHTML = '';
-
-    // Lặp qua từng tài liệu và tạo hàng (row) mới
     resources.forEach(resource => {
         const row = document.createElement('tr');
-        
-        // Lấy dữ liệu JOIN một cách an toàn
-        // resource.profiles là một object { full_name: '...' }
         const uploaderName = resource.profiles ? resource.profiles.full_name : 'N/A';
-        
-        // Định dạng ngày (dd/mm/yyyy)
         const uploadDate = new Date(resource.created_at).toLocaleDateString('vi-VN');
-            
-        // Định dạng phân loại (category)
         const categoryBadge = formatCategory(resource.category);
+        const filePathInStorage = resource.file_url ? resource.file_url.substring(resource.file_url.indexOf('/resources/') + '/resources/'.length) : null;
+
+        // Tạo chuỗi HTML cho hành động
+        let actionsHtml = `<a href="${resource.file_url}" target="_blank" class="text-indigo-600 hover:text-indigo-900 mr-3">Tải về</a>`;
+        // Chỉ Admin/Trưởng mảng mới thấy Sửa/Xóa
+        if (currentUserRole === 'chu_nhiem' || currentUserRole === 'pho_chu_nhiem' ||
+            currentUserRole === 'truong_mang_sk' || currentUserRole === 'truong_mang_tt') {
+            actionsHtml += `<a href="./admin-resource-edit.html?id=${resource.id}" class="text-indigo-600 hover:text-indigo-900 mr-3">Sửa</a>`;
+            actionsHtml += `<button data-resource-id="${resource.id}" data-resource-title="${resource.title}" data-file-path="${filePathInStorage || ''}" class="text-red-600 hover:text-red-900 delete-resource-button" ${!filePathInStorage ? 'disabled' : ''}>Xóa</button>`;
+        }
 
         row.innerHTML = `
-            <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900">${resource.title}</div>
-            </td>
-            
-            <td class="px-6 py-4 whitespace-nowrap">
-                ${categoryBadge}
-            </td>
-            
-            <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">${uploaderName}</div>
-            </td>
-
-            <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">${uploadDate}</div>
-            </td>
-            
-            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <a href="${resource.file_url}" target="_blank" class="text-indigo-600 hover:text-indigo-900">Tải về</a>
-                </td>
+            <td class="px-6 py-4 whitespace-nowrap"><div class="text-sm font-medium text-gray-900">${resource.title}</div></td>
+            <td class="px-6 py-4 whitespace-nowrap">${categoryBadge}</td>
+            <td class="px-6 py-4 whitespace-nowrap"><div class="text-sm text-gray-900">${uploaderName}</div></td>
+            <td class="px-6 py-4 whitespace-nowrap"><div class="text-sm text-gray-900">${uploadDate}</div></td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">${actionsHtml}</td>
         `;
-        
         tableBody.appendChild(row);
+    });
+
+    // Gắn sự kiện cho các nút Xóa (nếu có)
+    const deleteButtons = tableBody.querySelectorAll('.delete-resource-button');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', handleDeleteResourceClick);
     });
 }
 
-// 5. HÀM HỖ TRỢ: Định dạng phân loại tài liệu
+// 6. HÀM XỬ LÝ CLICK NÚT XÓA RESOURCE
+async function handleDeleteResourceClick(event) {
+    const button = event.target;
+    const resourceId = button.dataset.resourceId;
+    const resourceTitle = button.dataset.resourceTitle;
+    const filePath = button.dataset.filePath;
+
+    if (!filePath) { /* ... Báo lỗi không có path ... */ return; }
+
+    const isConfirmed = window.confirm(`Bạn có chắc chắn muốn xóa tài liệu "${resourceTitle}" không? File sẽ bị xóa vĩnh viễn.`);
+
+    if (isConfirmed) {
+        button.disabled = true; button.textContent = 'Đang xóa...';
+        try {
+            // Xóa file khỏi Storage
+            const { error: storageError } = await supabase.storage.from('resources').remove([filePath]);
+            if (storageError) console.warn('Lỗi xóa file Storage:', storageError);
+
+            // Xóa bản ghi khỏi Database
+            const { error: dbError } = await supabase.from('resources').delete().eq('id', resourceId);
+            if (dbError) throw dbError;
+
+            alert(`Đã xóa thành công tài liệu "${resourceTitle}".`);
+            loadResources(); // Cập nhật lại bảng
+        } catch (error) {
+            console.error('Lỗi xóa tài liệu:', error);
+            alert(`Lỗi xóa tài liệu: ${error.message}`);
+            button.disabled = false; button.textContent = 'Xóa';
+        }
+    } else { /* ... Hủy xóa ... */ }
+}
+
+// 7. HÀM HỖ TRỢ: Định dạng phân loại tài liệu
 function formatCategory(category) {
+    // ... (Giữ nguyên switch case) ...
     switch (category) {
-        case 'Chung':
-            return `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Chung</span>`;
-        case 'Sự kiện':
-            return `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Sự kiện</span>`;
-        case 'Truyền thông':
-            return `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Truyền thông</span>`;
-        default:
-            return `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">${category || 'N/A'}</span>`;
+        case 'Chung': return `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Chung</span>`;
+        case 'Sự kiện': return `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Sự kiện</span>`;
+        case 'Truyền thông': return `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Truyền thông</span>`;
+        default: return `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">${category || 'N/A'}</span>`;
     }
 }

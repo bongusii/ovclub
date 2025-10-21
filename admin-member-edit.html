@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh sửa Thành viên - CLB Ong Vàng</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ongvang: {
+                            DEFAULT: '#FFC107',
+                            dark: '#FFA000',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100">
+
+    <div class="flex h-screen">
+        <div class="w-64 bg-gray-800 text-white flex flex-col">
+            <div class="bg-gray-900 text-ongvang font-bold text-xl p-4 text-center">CLB Ong Vàng<span class="block text-sm text-gray-300">Hệ thống Quản lý</span></div>
+            <nav class="flex-1 p-4 space-y-2">
+                <a href="./dashboard.html" class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700"><span>Tổng quan</span></a>
+                <a href="./admin-members.html" class="flex items-center space-x-2 p-2 rounded-md bg-ongvang text-gray-900 font-semibold"><span>Thành viên</span></a>
+                <a href="./admin-events.html" class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700"><span>Sự kiện</span></a>
+                <a href="./admin-tasks.html" class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700"><span>Công việc</span></a>
+                <a href="./admin-resources.html" class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700"><span>Tài liệu</span></a>
+                <a href="./admin-designs.html" class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-700"><span>Yêu cầu Thiết kế</span></a>
+            </nav>
+            <div class="p-4"><button id="logout-button" class="flex items-center space-x-2 w-full p-2 rounded-md text-red-400 hover:bg-red-600 hover:text-white transition duration-200"><span>Đăng xuất</span></button></div>
+        </div>
+
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <header class="bg-white shadow-sm p-4">
+                <h1 class="text-2xl font-bold text-gray-800">Chỉnh sửa Thông tin Thành viên</h1>
+            </header>
+
+            <main class="flex-1 overflow-y-auto p-6">
+                <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
+
+                    <form id="edit-member-form" class="space-y-6">
+
+                        <input type="hidden" id="user_id" name="user_id">
+
+                        <div>
+                            <label for="email_display" class="block text-sm font-medium text-gray-700">Email (Không thể thay đổi)</label>
+                            <input type="email" id="email_display" name="email_display" readonly disabled
+                                   class="mt-1 block w-full p-3 rounded-md border border-gray-300 bg-gray-100 text-gray-500 shadow-sm">
+                        </div>
+
+                        <hr/>
+
+                        <div>
+                            <label for="full_name" class="block text-sm font-medium text-gray-700">Họ và tên đầy đủ *</label>
+                            <input type="text" id="full_name" name="full_name" required
+                                   class="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-ongvang focus:ring focus:ring-ongvang focus:ring-opacity-50"
+                                   placeholder="Đang tải...">
+                        </div>
+
+                        <div>
+                            <label for="role" class="block text-sm font-medium text-gray-700">Vai trò/Mảng *</label>
+                            <select id="role" name="role" required
+                                    class="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-ongvang focus:ring focus:ring-ongvang focus:ring-opacity-50">
+                                <option value="">-- Chọn vai trò --</option>
+                                <option value="thanh_vien_sk">Thành viên Sự kiện</option>
+                                <option value="thanh_vien_tt">Thành viên Truyền thông</option>
+                                <option value="truong_mang_sk">Trưởng mảng Sự kiện</option>
+                                <option value="truong_mang_tt">Trưởng mảng Truyền thông</option>
+                                <option value="pho_chu_nhiem">Phó Chủ nhiệm</option>
+                                <option value="chu_nhiem">Chủ nhiệm</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="mem_id" class="block text-sm font-medium text-gray-700">Mã số thành viên (Tùy chọn)</label>
+                            <input type="text" id="mem_id" name="mem_id"
+                                   class="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-ongvang focus:ring focus:ring-ongvang focus:ring-opacity-50"
+                                   placeholder="Đang tải...">
+                        </div>
+
+                        <div>
+                            <label for="is_active" class="block text-sm font-medium text-gray-700">Trạng thái *</label>
+                            <select id="is_active" name="is_active" required
+                                    class="mt-1 block w-full p-3 rounded-md border border-gray-300 shadow-sm focus:border-ongvang focus:ring focus:ring-ongvang focus:ring-opacity-50">
+                                <option value="true">Đang hoạt động</option>
+                                <option value="false">Cựu thành viên</option>
+                            </select>
+                        </div>
+
+
+                        <div id="form-message" class="hidden text-sm"></div>
+
+                        <div class="flex justify-end space-x-4 pt-4 border-t border-gray-200">
+                            <a href="./admin-members.html" class="bg-white py-2 px-4 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 border border-gray-300">Hủy</a>
+                            <button type="submit" id="submit-button" class="bg-ongvang hover:bg-ongvang-dark text-white font-bold py-2 px-4 rounded-md shadow-sm transition duration-300">Lưu thay đổi</button>
+                        </div>
+
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="./admin-member-edit.js"></script>
+
+</body>
+</html>

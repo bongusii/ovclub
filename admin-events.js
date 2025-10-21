@@ -37,7 +37,7 @@ async function checkUserSession() {
     }
 }
 
-// 4. TẢI DỮ LIỆU SỰ KIỆN
+// 4. TẢI DỮ LIỆU SỰ KIỆN (Đã cập nhật nút Xóa)
 async function loadEvents() {
     const tableBody = document.getElementById('events-table-body');
     if (!tableBody) return;
@@ -107,10 +107,57 @@ async function loadEvents() {
             </td>
 
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <a href="./admin-event-edit.html?id=${event.id}" class="text-indigo-600 hover:text-indigo-900">Sửa</a>
-                </td>
+                <a href="./admin-event-edit.html?id=${event.id}" class="text-indigo-600 hover:text-indigo-900 mr-3">Sửa</a>
+                
+                <button data-event-id="${event.id}" data-event-title="${event.title}" class="text-red-600 hover:text-red-900 delete-event-button">Xóa</button>
+            </td>
         `;
 
         tableBody.appendChild(row);
     });
+
+    // Gắn sự kiện cho các nút Xóa vừa tạo
+    const deleteButtons = document.querySelectorAll('.delete-event-button');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', handleDeleteClick);
+    });
+}
+
+// 5. HÀM MỚI ĐỂ XỬ LÝ CLICK NÚT XÓA
+async function handleDeleteClick(event) {
+    const button = event.target;
+    const eventId = button.dataset.eventId;
+    const eventTitle = button.dataset.eventTitle;
+
+    // 1. Hiển thị hộp thoại xác nhận
+    const isConfirmed = window.confirm(`Bạn có chắc chắn muốn xóa sự kiện "${eventTitle}" không? Hành động này không thể hoàn tác.`);
+
+    // 2. Nếu người dùng xác nhận
+    if (isConfirmed) {
+        console.log(`Đang xóa sự kiện ID: ${eventId}`);
+        try {
+            // 3. Gọi Supabase để xóa
+            const { error } = await supabase
+                .from('events')
+                .delete()
+                .eq('id', eventId); // Chỉ xóa sự kiện có ID khớp
+
+            if (error) {
+                // Nếu có lỗi từ Supabase
+                throw error;
+            }
+
+            // 4. Xóa thành công: Tải lại danh sách sự kiện
+            alert(`Đã xóa thành công sự kiện "${eventTitle}".`);
+            loadEvents(); // Gọi lại hàm loadEvents để cập nhật bảng
+
+        } catch (error) {
+            // Bắt lỗi và thông báo
+            console.error('Lỗi khi xóa sự kiện:', error);
+            alert(`Lỗi khi xóa sự kiện: ${error.message}`);
+        }
+    } else {
+        // Nếu người dùng nhấn Hủy
+        console.log('Hủy xóa sự kiện.');
+    }
 }
